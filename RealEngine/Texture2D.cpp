@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Texture2D.h"
 #include "stb/stb_image.h"
+#include "src/glext.h"
 
 Texture2D *Texture2D::Load(std::string &path) {
     Texture2D *texture2D;
@@ -64,12 +65,12 @@ void Texture2D::Compress(const std::string &source_path, const std::string &targ
             }
             case 3: {
                 source_format = GL_RGB;
-                compress_format = GL_COMPRESSED_RGB;
+                compress_format = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 break;
             }
             case 4: {
                 source_format = GL_RGBA;
-                compress_format = GL_COMPRESSED_RGBA;
+                compress_format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                 break;
             }
             default:

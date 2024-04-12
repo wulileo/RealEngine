@@ -7,7 +7,8 @@ add_executable(RealEngine main.cpp src/glad.c
         VertexData.h
         ShaderSource.h
         Texture2D.cpp
-        Texture2D.h)
+        Texture2D.h
+        src/glext.h)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/libs)

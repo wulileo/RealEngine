@@ -25,6 +25,8 @@ GLFWwindow *window;
 GLuint vertex_shader, fragment_shader, program;
 GLint mvp_location, vpos_location, vcol_location, u_diffuse_texture_location, a_uv_location;
 Texture2D *texture2d = nullptr;
+GLuint kVBO, kEBO;
+GLuint kVAO;
 
 void init_opengl() {
     glfwSetErrorCallback(reinterpret_cast<GLFWerrorfun>(error_callback));
@@ -33,8 +35,12 @@ void init_opengl() {
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     window = glfwCreateWindow(960, 640, "RealEngine", nullptr, nullptr);
     if (!window) {
@@ -84,19 +90,44 @@ void compile_shader() {
     }
 }
 
+void generate_buffer_object() {
+    glGenBuffers(1, &kVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, kVBO);
+    glBufferData(GL_ARRAY_BUFFER, (long) (kVertexRemoveDuplicateVector.size() * sizeof(Vertex)),
+                 &kVertexRemoveDuplicateVector[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &kEBO);
+    glBindBuffer(GL_ARRAY_BUFFER, kEBO);
+    glBufferData(GL_ARRAY_BUFFER, (long) (kVertexIndexVector.size() * sizeof(unsigned short)),
+                 &kVertexIndexVector[0], GL_STATIC_DRAW);
+
+    glBindVertexArray(kVAO);
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, kVBO);
+        glVertexAttribPointer(vpos_location, 3, GL_FLOAT, false, sizeof(Vertex), 0);
+        glVertexAttribPointer(vcol_location, 4, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * 3));
+        glVertexAttribPointer(a_uv_location, 2, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * (3 + 4)));
+        glEnableVertexAttribArray(vpos_location);
+        glEnableVertexAttribArray(vcol_location);
+        glEnableVertexAttribArray(a_uv_location);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kEBO);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void generate_vertex_array_object() {
+    glGenVertexArrays(1, &kVAO);
+}
+
 void createTexture(std::string path) {
     texture2d = Texture2D::Load(path);
 }
 
 int main() {
-    init_opengl();
 
-//    Texture2D::Compress("../../resource/images/urban.jpg", "../../resource/images/urban.ret");
-//
-//    glfwDestroyWindow(window);
-//
-//    glfwTerminate();
-//    exit(EXIT_SUCCESS);
+    VertexRemoveDuplicate();
+
+    init_opengl();
 
     createTexture("../../resource/images/urban.ret");
 
@@ -108,6 +139,9 @@ int main() {
     a_uv_location = glGetAttribLocation(program, "a_uv");
 
     u_diffuse_texture_location = glGetUniformLocation(program, "u_diffuse_texture");
+
+    generate_vertex_array_object();
+    generate_buffer_object();
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;
@@ -144,22 +178,17 @@ int main() {
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
 
-            glEnableVertexAttribArray(vpos_location);
-            glVertexAttribPointer(vpos_location, 3, GL_FLOAT, false, sizeof(glm::vec3), kPositions);
-
-            glEnableVertexAttribArray(vcol_location);
-            glVertexAttribPointer(vcol_location, 3, GL_FLOAT, false, sizeof(glm::vec4), kColors);
-
-            glEnableVertexAttribArray(a_uv_location);
-            glVertexAttribPointer(a_uv_location, 2, GL_FLOAT, false, sizeof(glm::vec2), kUvs);
-
             glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture2d->id);
             glUniform1i(u_diffuse_texture_location, 0);
 
-            glDrawArrays(GL_TRIANGLES, 0, 6 * 6);
+            glBindVertexArray(kVAO);
+            {
+                glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+            }
+            glBindVertexArray(0);
         }
 
         glfwSwapBuffers(window);
