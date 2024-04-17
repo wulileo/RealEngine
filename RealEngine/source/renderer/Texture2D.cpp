@@ -1,11 +1,5 @@
-﻿//
-// Created by Administrator on 2024/4/11.
-//
-
-#include <fstream>
-#include "Texture2D.h"
-#include "stb/stb_image.h"
-#include "src/glext.h"
+﻿#include "Texture2D.h"
+#include "stb_image.h"
 
 Texture2D *Texture2D::Load(std::string &path) {
     Texture2D *texture2D;

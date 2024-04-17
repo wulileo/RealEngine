@@ -1,21 +1,19 @@
-#include <iostream>
-#include <glad/glad.h>
-
 #define GLFW_INCLUDE_NONE
 
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform2.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
+#include <iostream>
 #include <cstdlib>
 #include <cstdio>
 
-#include "VertexData.h"
-#include "ShaderSource.h"
+#include "glad.h"
+#include "glfw3.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "gtx/transform2.hpp"
+#include "gtx/euler_angles.hpp"
+
 #include "Texture2D.h"
+#include "Mesh.h"
+#include "Shader.h"
 
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -27,6 +25,7 @@ GLint mvp_location, vpos_location, vcol_location, u_diffuse_texture_location, a_
 Texture2D *texture2d = nullptr;
 GLuint kVBO, kEBO;
 GLuint kVAO;
+Mesh *mesh;
 
 void init_opengl() {
     glfwSetErrorCallback(reinterpret_cast<GLFWerrorfun>(error_callback));
@@ -53,53 +52,15 @@ void init_opengl() {
     glfwSwapInterval(1);
 }
 
-void compile_shader() {
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_text, nullptr);
-    glCompileShader(vertex_shader);
-    GLint compile_status = GL_FALSE;
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &compile_status);
-    if (compile_status == GL_FALSE) {
-        GLchar message[256];
-        glGetShaderInfoLog(vertex_shader, sizeof(message), nullptr, message);
-        std::cout << "compile vs error:" << message << std::endl;
-    }
-
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_text, nullptr);
-    glCompileShader(fragment_shader);
-    compile_status = GL_FALSE;
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &compile_status);
-    if (compile_status == GL_FALSE) {
-        GLchar message[256];
-        glGetShaderInfoLog(fragment_shader, sizeof(message), nullptr, message);
-        std::cout << "compile fs error:" << message << std::endl;
-    }
-
-
-    program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
-    GLint link_status = GL_FALSE;
-    glGetProgramiv(program, GL_LINK_STATUS, &link_status);
-    if (link_status == GL_FALSE) {
-        GLchar message[256];
-        glGetProgramInfoLog(program, sizeof(message), nullptr, message);
-        std::cout << "link error:" << message << std::endl;
-    }
-}
-
 void generate_buffer_object() {
     glGenBuffers(1, &kVBO);
     glBindBuffer(GL_ARRAY_BUFFER, kVBO);
-    glBufferData(GL_ARRAY_BUFFER, (long) (kVertexRemoveDuplicateVector.size() * sizeof(Vertex)),
-                 &kVertexRemoveDuplicateVector[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, (long) (mesh->vertex_num * sizeof(Vertex)), mesh->vertex_data, GL_STATIC_DRAW);
 
     glGenBuffers(1, &kEBO);
     glBindBuffer(GL_ARRAY_BUFFER, kEBO);
-    glBufferData(GL_ARRAY_BUFFER, (long) (kVertexIndexVector.size() * sizeof(unsigned short)),
-                 &kVertexIndexVector[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, (long) (mesh->vertex_index_num * sizeof(unsigned short)), mesh->vertex_index_data,
+                 GL_STATIC_DRAW);
 
     glBindVertexArray(kVAO);
     {
@@ -125,20 +86,20 @@ void createTexture(std::string path) {
 
 int main() {
 
-    VertexRemoveDuplicate();
+    mesh = Mesh::load_mesh("../../data/model/cube.mesh");
 
     init_opengl();
 
-    createTexture("../../resource/images/urban.ret");
+    createTexture("../../data/images/urban.ret");
 
-    compile_shader();
+    Shader *shader = Shader::find("../../data/shader/unlit");
 
-    mvp_location = glGetUniformLocation(program, "u_mvp");
-    vpos_location = glGetAttribLocation(program, "a_pos");
-    vcol_location = glGetAttribLocation(program, "a_color");
-    a_uv_location = glGetAttribLocation(program, "a_uv");
+    mvp_location = glGetUniformLocation(shader->program_id, "u_mvp");
+    vpos_location = glGetAttribLocation(shader->program_id, "a_pos");
+    vcol_location = glGetAttribLocation(shader->program_id, "a_color");
+    a_uv_location = glGetAttribLocation(shader->program_id, "a_uv");
 
-    u_diffuse_texture_location = glGetUniformLocation(program, "u_diffuse_texture");
+    u_diffuse_texture_location = glGetUniformLocation(shader->program_id, "u_diffuse_texture");
 
     generate_vertex_array_object();
     generate_buffer_object();
@@ -173,7 +134,7 @@ int main() {
 
         mvp = projection * view * model;
 
-        glUseProgram(program);
+        glUseProgram(shader->program_id);
         {
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);

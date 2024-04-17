@@ -4,7 +4,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <iostream>
-#include <glad/glad.h>
+#include <fstream>
+
+#include "glad.h"
+#include "glext.h"
 
 class Texture2D {
 private:
