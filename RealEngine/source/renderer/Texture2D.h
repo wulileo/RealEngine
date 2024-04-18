@@ -16,7 +16,7 @@ private:
     ~Texture2D() = default;
 
 public:
-    static Texture2D *Load(std::string &path);
+    static Texture2D *Load(const std::string &path);
 
     static void Compress(const std::string &source_path, const std::string &target_path);
 

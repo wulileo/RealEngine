@@ -1,7 +1,7 @@
 ﻿#include "Texture2D.h"
 #include "stb_image.h"
 
-Texture2D *Texture2D::Load(std::string &path) {
+Texture2D *Texture2D::Load(const std::string &path) {
     Texture2D *texture2D;
     texture2D = new Texture2D();
 
@@ -27,9 +27,7 @@ Texture2D *Texture2D::Load(std::string &path) {
 
     glBindTexture(GL_TEXTURE_2D, texture2D->id);
 
-    glCompressedTexImage2D(GL_TEXTURE_2D, head.level, texture2D->format, texture2D->width,
-                           texture2D->height, 0,
-                           head.size, data);
+    glCompressedTexImage2D(GL_TEXTURE_2D, head.level, texture2D->format, texture2D->width, texture2D->height, 0, head.size, data);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

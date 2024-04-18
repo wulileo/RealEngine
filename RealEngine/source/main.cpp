@@ -13,19 +13,15 @@
 
 #include "Texture2D.h"
 #include "Mesh.h"
-#include "Shader.h"
+#include "Material.h"
+#include "Utils.h"
+#include "MeshRenderer.h"
 
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
 }
 
 GLFWwindow *window;
-GLuint vertex_shader, fragment_shader, program;
-GLint mvp_location, vpos_location, vcol_location, u_diffuse_texture_location, a_uv_location;
-Texture2D *texture2d = nullptr;
-GLuint kVBO, kEBO;
-GLuint kVAO;
-Mesh *mesh;
 
 void init_opengl() {
     glfwSetErrorCallback(reinterpret_cast<GLFWerrorfun>(error_callback));
@@ -52,57 +48,18 @@ void init_opengl() {
     glfwSwapInterval(1);
 }
 
-void generate_buffer_object() {
-    glGenBuffers(1, &kVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, kVBO);
-    glBufferData(GL_ARRAY_BUFFER, (long) (mesh->vertex_num * sizeof(Vertex)), mesh->vertex_data, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &kEBO);
-    glBindBuffer(GL_ARRAY_BUFFER, kEBO);
-    glBufferData(GL_ARRAY_BUFFER, (long) (mesh->vertex_index_num * sizeof(unsigned short)), mesh->vertex_index_data,
-                 GL_STATIC_DRAW);
-
-    glBindVertexArray(kVAO);
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, kVBO);
-        glVertexAttribPointer(vpos_location, 3, GL_FLOAT, false, sizeof(Vertex), 0);
-        glVertexAttribPointer(vcol_location, 4, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * 3));
-        glVertexAttribPointer(a_uv_location, 2, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * (3 + 4)));
-        glEnableVertexAttribArray(vpos_location);
-        glEnableVertexAttribArray(vcol_location);
-        glEnableVertexAttribArray(a_uv_location);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, kEBO);
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void generate_vertex_array_object() {
-    glGenVertexArrays(1, &kVAO);
-}
-
-void createTexture(std::string path) {
-    texture2d = Texture2D::Load(path);
-}
-
 int main() {
-
-    mesh = Mesh::load_mesh("../../data/model/cube.mesh");
+    Utils::data_dir = "../data/";
 
     init_opengl();
 
-    createTexture("../../data/images/urban.ret");
+    auto mesh = Mesh::load_mesh(Utils::data_dir + "model/cube.mesh");
 
-    Shader *shader = Shader::find("../../data/shader/unlit");
+    auto *material = Material::parse(Utils::data_dir + "material/cube.mat");
 
-    mvp_location = glGetUniformLocation(shader->program_id, "u_mvp");
-    vpos_location = glGetAttribLocation(shader->program_id, "a_pos");
-    vcol_location = glGetAttribLocation(shader->program_id, "a_color");
-    a_uv_location = glGetAttribLocation(shader->program_id, "a_uv");
-
-    u_diffuse_texture_location = glGetUniformLocation(shader->program_id, "u_diffuse_texture");
-
-    generate_vertex_array_object();
-    generate_buffer_object();
+    auto *renderer = new MeshRenderer();
+    renderer->mesh = mesh;
+    renderer->material = material;
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;
@@ -134,23 +91,8 @@ int main() {
 
         mvp = projection * view * model;
 
-        glUseProgram(shader->program_id);
-        {
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_CULL_FACE);
-
-            glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture2d->id);
-            glUniform1i(u_diffuse_texture_location, 0);
-
-            glBindVertexArray(kVAO);
-            {
-                glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
-            }
-            glBindVertexArray(0);
-        }
+        renderer->mvp = mvp;
+        renderer->render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
