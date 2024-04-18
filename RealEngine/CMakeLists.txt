@@ -3,6 +3,11 @@ project(RealEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 
+if (MINGW)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-pragmas")
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-pragmas")
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/depends)
 include_directories(${PROJECT_SOURCE_DIR}/depends/glad)
 include_directories(${PROJECT_SOURCE_DIR}/depends/GLFW)

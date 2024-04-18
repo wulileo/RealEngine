@@ -11,7 +11,6 @@
 #include "gtx/transform2.hpp"
 #include "gtx/euler_angles.hpp"
 
-#include "Texture2D.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Utils.h"
