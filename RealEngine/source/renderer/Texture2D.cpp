@@ -45,7 +45,7 @@ void Texture2D::Compress(const std::string &source_path, const std::string &targ
     int height;
     int channel;
 
-    unsigned char *data = stbi_load(source_path.c_str(), &width, &height, &channel, 0);
+    unsigned char *data = stbi_load(source_path.c_str(), &width, &height, &channel, STBI_rgb_alpha);
 
     int source_format = GL_RGB;
     int compress_format = GL_COMPRESSED_RGB;

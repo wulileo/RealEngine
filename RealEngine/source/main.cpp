@@ -16,6 +16,8 @@
 #include "Utils.h"
 #include "MeshRenderer.h"
 
+#include "Core/Collections/Array.h"
+
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -52,9 +54,13 @@ int main() {
 
     init_opengl();
 
-    auto mesh = Mesh::load_mesh(Utils::data_dir + "model/cube.mesh");
+//    Texture2D::Compress("../data/images/dragon.png", "../data/images/dragon.ret");
+//
+//    return 0;
 
-    auto *material = Material::parse(Utils::data_dir + "material/cube.mat");
+    auto mesh = Mesh::load_mesh(Utils::data_dir + "model/dragon.mesh");
+
+    auto *material = Material::parse(Utils::data_dir + "material/dragon.mat");
 
     auto *renderer = new MeshRenderer();
     renderer->mesh = mesh;

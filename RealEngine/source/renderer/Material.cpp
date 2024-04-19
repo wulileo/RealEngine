@@ -29,7 +29,7 @@ Material *Material::parse(const string &path) {
 
         rapidxml::xml_attribute<> *texture_image_attribute = material_texture_node->first_attribute("image");
         if (texture_image_attribute == nullptr) {
-            return nullptr;
+            return material;
         }
 
         string shader_property_name = texture_name_attribute->value();
