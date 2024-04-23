@@ -3,23 +3,31 @@
 #include <type_traits>
 #include <vector>
 
-using std::is_same;
+using std::is_convertible;
 using std::vector;
-
-class UObject;
 
 template<typename T>
 class TArray {
-    static_assert(is_same<T, UObject *>::value, "Template parameter T must be of type Object*");
-
 public:
-    void Add(T);
+    void Add(T t) {
+        data.push_back(t);
+    }
 
-    T Remove();
+    T Remove() {
+        return data.pop_back();
+    }
 
-    T Remove(int Index);
+    T Remove(int Index) {
+        return data.erase(Index);
+    }
 
-    void Clear();
+    void Clear() {
+        data.clear();
+    }
+
+    int Size() {
+        return data.size();
+    }
 
 private:
     vector<T> data;

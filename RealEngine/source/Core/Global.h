@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <string>
-#include <rttr/registration.h>
+
+#include "Reflection.h"
+#include "MathLibrary.h"
 
 typedef std::string String;
