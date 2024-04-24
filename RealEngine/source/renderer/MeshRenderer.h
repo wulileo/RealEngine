@@ -19,14 +19,12 @@ public:
     Material *material;
     Mesh *mesh;
 
-    glm::mat4 mvp;
-
     unsigned int vertex_buffer_object = 0;
     unsigned int element_buffer_object = 0;
     unsigned int vertex_array_object = 0;
 
 public:
-    void render();
+    void render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view);
 };
 
 

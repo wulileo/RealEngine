@@ -1,6 +1,16 @@
 ﻿#include "MeshRenderer.h"
+#include "gtx/transform.hpp"
+#include "gtx/euler_angles.hpp"
 
-void MeshRenderer::render() {
+void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view) {
+    glm::mat4 translation4 = glm::translate(position);
+    glm::mat4 rotation4 = glm::eulerAngleYXZ(glm::radians(rotation.y),
+                                             glm::radians(rotation.x),
+                                             glm::radians(rotation.z));
+    glm::mat4 scale4 = glm::scale(scale);
+    glm::mat4 model = translation4 * scale4 * rotation4;
+    glm::mat4 mvp = projection * view * model;
+
     GLuint program_id = material->shader->program_id;
 
     if (vertex_array_object == 0) {
@@ -14,7 +24,8 @@ void MeshRenderer::render() {
 
         glGenBuffers(1, &element_buffer_object);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_object);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int) (mesh->vertex_index_num * sizeof(unsigned short)), mesh->vertex_index_data, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int) (mesh->vertex_index_num * sizeof(unsigned short)),
+                     mesh->vertex_index_data, GL_STATIC_DRAW);
 
         glGenVertexArrays(1, &vertex_array_object);
 

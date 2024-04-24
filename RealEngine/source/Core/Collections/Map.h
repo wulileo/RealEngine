@@ -8,7 +8,7 @@ template<typename K, typename V>
 class TMap {
 public:
     void Put(K k, V v) {
-        data.insert(k, v);
+        data[k] = v;
     }
 
     V Get(K k) {
