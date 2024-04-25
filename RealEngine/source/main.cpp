@@ -4,15 +4,14 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "glad.h"
 #include "glfw3.h"
 #include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
 
 #include "Utils.h"
 
 #include "Core/Object/MeshComponent.h"
 #include "Core/Object/Actor.h"
+#include "Core/Object/CameraComponent.h"
 
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -59,6 +58,10 @@ int main() {
     MeshComponent->LoadMesh(Utils::data_dir + "model/dragon.mesh");
     MeshComponent->LoadMaterial(Utils::data_dir + "material/dragon.mat");
 
+    auto *Camera = new AActor();
+    auto CameraComponent = Camera->AddComponent<ACameraComponent>();
+    CameraComponent->Transform.Position = glm::vec3(0, 0, 10);
+
     while (!glfwWindowShouldClose(window)) {
         float ratio;
         int width, height;
@@ -68,8 +71,9 @@ int main() {
 
         glViewport(0, 0, width, height);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(49.f / 255, 77.f / 255, 121.f / 255, 1.f);
+        CameraComponent->SetView(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        CameraComponent->SetProjection(60.f, ratio, 1.f, 1000.f);
+        CameraComponent->Clear();
 
         static float rotate_eulerAngle = 0.f;
         rotate_eulerAngle += 0.1f;
@@ -77,10 +81,7 @@ int main() {
         rotation.y = rotate_eulerAngle;
         MeshComponent->Transform.Rotation = rotation;
 
-        glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-        glm::mat4 projection = glm::perspective(glm::radians(60.f), ratio, 1.f, 1000.f);
-
-        MeshComponent->Render(view, projection);
+        MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

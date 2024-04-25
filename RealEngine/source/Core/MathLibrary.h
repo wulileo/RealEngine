@@ -2,6 +2,7 @@
 
 #include "vec3.hpp"
 #include "detail/type_mat.hpp"
+#include "glm.hpp"
 
 typedef glm::vec3 FVector;
 typedef glm::vec4 FVector4;
