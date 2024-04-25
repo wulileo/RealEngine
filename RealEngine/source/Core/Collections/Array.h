@@ -29,6 +29,14 @@ public:
         return data.size();
     }
 
+    typename vector<T>::const_iterator begin() const {
+        return data.cbegin();
+    }
+
+    typename vector<T>::const_iterator end() const {
+        return data.cend();
+    }
+
 private:
     vector<T> data;
 };
