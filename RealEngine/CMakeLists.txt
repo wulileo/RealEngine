@@ -16,6 +16,7 @@ include_directories(${PROJECT_SOURCE_DIR}/depends/glext)
 include_directories(${PROJECT_SOURCE_DIR}/depends/glm)
 include_directories(${PROJECT_SOURCE_DIR}/depends/stb)
 include_directories(${PROJECT_SOURCE_DIR}/depends/rapidxml)
+
 include_directories(${PROJECT_SOURCE_DIR}/source)
 include_directories(${PROJECT_SOURCE_DIR}/source/renderer)
 include_directories(${PROJECT_SOURCE_DIR}/source/utils)
@@ -26,9 +27,10 @@ set(glad_c ${PROJECT_SOURCE_DIR}/depends/glad/glad.c)
 
 file(GLOB_RECURSE engine_cpp source/*.cpp)
 file(GLOB_RECURSE engine_h source/*.h)
+file(GLOB_RECURSE project_cpp project/*.cpp)
 
 file(GLOB_RECURSE rttr_cpp depends/rttr/*.cpp)
 
-add_executable(RealEngine ${engine_h} ${engine_cpp} ${glad_c} ${rttr_cpp})
+add_executable(RealEngine ${engine_h} ${engine_cpp} ${glad_c} ${rttr_cpp} ${project_cpp})
 
 target_link_libraries(RealEngine ${PROJECT_SOURCE_DIR}/libs/glfw3.dll)

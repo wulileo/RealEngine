@@ -13,6 +13,10 @@ public:
         data.push_back(t);
     }
 
+    T Get(int Index) {
+        return data[Index];
+    }
+
     T Remove() {
         return data.pop_back();
     }

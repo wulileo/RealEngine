@@ -1,5 +1,5 @@
 #include "Input.h"
-#include "Core/Collections/Array.h"
+#include "core/collections/Array.h"
 
 TMap<unsigned short, unsigned char> Input::KeyEventMap;
 FVector2 Input::MousePosition = {0, 0};

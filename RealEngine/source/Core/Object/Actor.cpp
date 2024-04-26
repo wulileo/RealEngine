@@ -6,3 +6,13 @@ AComponent *AActor::AddComponent(const String &Name) {
     Components.Add(Component);
     return Component;
 }
+
+void AActor::BeginPlay() {
+
+}
+
+void AActor::Tick() {
+    for (auto Component: Components) {
+        Component->Tick();
+    }
+}

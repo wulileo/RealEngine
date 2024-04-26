@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/Collections/Map.h"
+#include "core/collections/Map.h"
 #include "KeyCode.h"
-#include "Core/Global.h"
+#include "core/Global.h"
 
 class Input {
 public:
