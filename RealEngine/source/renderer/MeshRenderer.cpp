@@ -24,8 +24,7 @@ void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scal
 
         glGenBuffers(1, &element_buffer_object);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_object);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int) (mesh->vertex_index_num * sizeof(unsigned short)),
-                     mesh->vertex_index_data, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (int) (mesh->vertex_index_num * sizeof(unsigned short)), mesh->vertex_index_data, GL_STATIC_DRAW);
 
         glGenVertexArrays(1, &vertex_array_object);
 
@@ -49,6 +48,8 @@ void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scal
     {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glUniformMatrix4fv(glGetUniformLocation(program_id, "u_mvp"), 1, GL_FALSE, &mvp[0][0]);
 

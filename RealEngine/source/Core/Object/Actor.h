@@ -9,15 +9,15 @@ class AComponent;
 
 class AActor : public UObject {
 public:
-    AActor() {
+    explicit AActor(const String &Name) : UObject(Name) {
         UObject::Actors.Add(this);
     }
 
     AComponent *AddComponent(const String &Name);
 
     template<typename T>
-    T *AddComponent() {
-        T *t = new T();
+    T *AddComponent(const String &Name) {
+        T *t = new T(Name);
         auto *Component = Cast<AComponent *>(t);
         if (Component) {
             Component->Owner = this;

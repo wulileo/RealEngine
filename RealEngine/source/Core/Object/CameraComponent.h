@@ -5,6 +5,10 @@
 
 class ACameraComponent : public AComponent {
 public:
+    explicit ACameraComponent(const String &Name) : AComponent(Name) {
+
+    }
+
     void SetView(const FVector &Forward, const FVector &Up);
 
     void SetProjection(float Degree, float Ratio, float NearClip, float FarClip);

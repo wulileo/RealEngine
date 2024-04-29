@@ -6,7 +6,10 @@
 RTTR_REGISTRATION \
 { \
     rttr::registration::class_<Class>(#Class) \
-    .constructor<>()
+
+#define CONSTRUCTOR(Type) \
+    .constructor<Type>()
+
 
 #define PROPERTY(Class, Property) \
     .property(#Property, &Class::Property)

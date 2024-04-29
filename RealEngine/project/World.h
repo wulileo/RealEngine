@@ -8,15 +8,27 @@
 
 class AWorld : public AActor {
 public:
+    explicit AWorld(const String &Name) : AActor(Name) {
+
+    }
+
     void BeginPlay() override;
 
     void Tick() override;
 
+private:
+    void CreateCamera();
+
+    void CreateDragon();
+
+    void CreatFont() const;
+
 public:
-    AActor *Actor;
-    AMeshComponent *MeshComponent;
-    ACameraComponent *CameraComponent;
+    ACameraComponent *MainCameraComponent{};
+
     FVector2 MousePos;
+
+    void CreateCube();
 };
 
 #endif //REALENGINE_WORLD_H

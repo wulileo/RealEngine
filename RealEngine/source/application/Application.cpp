@@ -5,6 +5,8 @@
 #include "core/object/MeshComponent.h"
 #include "core/object/CameraComponent.h"
 
+ACameraComponent *Application::MainCameraComponent = nullptr;
+
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -77,13 +79,9 @@ void Application::render() {
         TArray<AMeshComponent *> MeshComponents;
         Actor->GetComponents<AMeshComponent>(MeshComponents);
 
-        TArray<ACameraComponent *> CameraComponents;
-        Actor->GetComponents<ACameraComponent>(CameraComponents);
-
-        if (MeshComponents.Size() > 0 && CameraComponents.Size() > 0) {
+        if (MeshComponents.Size() > 0 && MainCameraComponent) {
             AMeshComponent *MeshComponent = MeshComponents.Get(0);
-            ACameraComponent *CameraComponent = CameraComponents.Get(0);
-            MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
+            MeshComponent->Render(MainCameraComponent->View, MainCameraComponent->Projection);
         }
     }
 }

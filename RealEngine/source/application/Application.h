@@ -6,6 +6,7 @@
 #include <glfw3.h>
 
 #include "Screen.h"
+#include "core/object/CameraComponent.h"
 
 using std::string;
 
@@ -28,6 +29,8 @@ public:
     string data_path;
 
     GLFWwindow *window;
+
+    static ACameraComponent *MainCameraComponent;
 
 private:
 

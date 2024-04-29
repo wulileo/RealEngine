@@ -22,7 +22,9 @@ class Texture2D;
 
 class Material {
 public:
-    static Material* parse(const string &path);
+    static Material *parse(const string &path);
+
+    void set_texture(const string &name, Texture2D *texture2D);
 
 public:
     Shader *shader;

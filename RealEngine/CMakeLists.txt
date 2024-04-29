@@ -8,6 +8,9 @@ if (MINGW)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-pragmas")
 endif ()
 
+#file(COPY ${PROJECT_SOURCE_DIR} DESTINATION ${PROJECT_BINARY_DIR})
+
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -mwindows")
 
 include_directories(${PROJECT_SOURCE_DIR}/depends)
 include_directories(${PROJECT_SOURCE_DIR}/depends/glad)
@@ -16,6 +19,8 @@ include_directories(${PROJECT_SOURCE_DIR}/depends/glext)
 include_directories(${PROJECT_SOURCE_DIR}/depends/glm)
 include_directories(${PROJECT_SOURCE_DIR}/depends/stb)
 include_directories(${PROJECT_SOURCE_DIR}/depends/rapidxml)
+include_directories(${PROJECT_SOURCE_DIR}/depends/freetype)
+include_directories(${PROJECT_SOURCE_DIR}/depends/renderdoc)
 
 include_directories(${PROJECT_SOURCE_DIR}/source)
 include_directories(${PROJECT_SOURCE_DIR}/source/renderer)
@@ -33,4 +38,4 @@ file(GLOB_RECURSE rttr_cpp depends/rttr/*.cpp)
 
 add_executable(RealEngine ${engine_h} ${engine_cpp} ${glad_c} ${rttr_cpp} ${project_cpp})
 
-target_link_libraries(RealEngine ${PROJECT_SOURCE_DIR}/libs/glfw3.dll)
+target_link_libraries(RealEngine ${PROJECT_SOURCE_DIR}/libs/glfw3.dll ${PROJECT_SOURCE_DIR}/libs/libfreetyped.a)

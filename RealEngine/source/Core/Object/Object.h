@@ -7,6 +7,11 @@ class AActor;
 
 class UObject {
 public:
+    UObject() = delete;
+
+    explicit UObject(const String &Name) {
+        this->Name = Name;
+    }
 
 public:
     static TArray<AActor *> Actors;

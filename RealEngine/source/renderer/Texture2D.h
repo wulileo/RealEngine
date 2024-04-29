@@ -13,12 +13,20 @@ class Texture2D {
 private:
     Texture2D() {};
 
-    ~Texture2D() = default;
-
 public:
     static Texture2D *Load(const std::string &path);
 
+    static Texture2D *LoadWithCompress(const std::string &path);
+
+    static Texture2D *LoadWithoutCompress(const std::string &path);
+
+    static Texture2D *Create(int width, int height, unsigned int server_format, unsigned int client_format, unsigned int data_type, unsigned char *data);
+
     static void Compress(const std::string &source_path, const std::string &target_path);
+
+    void UpdateSubImage(int x,int y,int width,int height,unsigned int client_format,unsigned int data_type,unsigned char* data) const;
+
+    ~Texture2D() = default;
 
 public:
     int level{};

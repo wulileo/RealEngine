@@ -16,8 +16,8 @@ class Texture2D;
 
 class MeshRenderer {
 public:
-    Material *material;
-    Mesh *mesh;
+    Material *material{};
+    Mesh *mesh{};
 
     unsigned int vertex_buffer_object = 0;
     unsigned int element_buffer_object = 0;

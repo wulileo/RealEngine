@@ -40,3 +40,13 @@ Material *Material::parse(const string &path) {
     }
     return material;
 }
+
+void Material::set_texture(const string &name, Texture2D *texture2D) {
+    for (auto &pair: textures) {
+        if (pair.first == name) {
+            delete (pair.second);
+            pair.second = texture2D;
+            break;
+        }
+    }
+}

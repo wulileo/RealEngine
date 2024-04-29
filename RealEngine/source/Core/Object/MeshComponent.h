@@ -7,6 +7,10 @@
 
 class AMeshComponent : public AComponent {
 public:
+    explicit AMeshComponent(const String &Name) : AComponent(Name) {
+
+    }
+
     void LoadMesh(const String &MeshFile);
 
     void LoadMaterial(const String &MaterialFile);
@@ -18,6 +22,7 @@ private:
 public:
     FTransform Transform;
 
-private:
     MeshRenderer MeshRenderer;
+
+    void CreateMesh(const vector<Vertex> &data, const vector<unsigned short> &index_data);
 };
