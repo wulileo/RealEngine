@@ -15,10 +15,9 @@ void AWorld::BeginPlay() {
 
     CreateCamera();
 
-//    CreatFont();
-//    CreateDragon();
+    CreatFont();
 
-    CreateCube();
+    CreateDragon();
 }
 
 void AWorld::Tick() {

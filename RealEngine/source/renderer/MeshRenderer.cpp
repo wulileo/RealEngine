@@ -30,7 +30,7 @@ void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scal
 
         glBindVertexArray(vertex_array_object);
         {
-            glBindBuffer(GL_ARRAY_BUFFER, vertex_array_object);
+            glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
             glVertexAttribPointer(pos_location, 3, GL_FLOAT, false, sizeof(Vertex), 0);
             glVertexAttribPointer(col_location, 4, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * 3));
             glVertexAttribPointer(uv_location, 2, GL_FLOAT, false, sizeof(Vertex), (void *) (sizeof(float) * (3 + 4)));
