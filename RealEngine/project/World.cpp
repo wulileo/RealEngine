@@ -15,9 +15,11 @@ void AWorld::BeginPlay() {
 
     CreateCamera();
 
-    CreatFont();
+//    CreatFont();
 
     CreateDragon();
+
+    CreatUI();
 }
 
 void AWorld::Tick() {
@@ -51,29 +53,36 @@ void AWorld::CreateDragon() {
 }
 
 void AWorld::CreatFont() const {
-    vector<Vertex> vertex_vector = {
-            {{-1.0f, -1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
-            {{1.0f,  -1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-            {{1.0f,  1.0f,  1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-            {{-1.0f, 1.0f,  1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-    };
-    vector<unsigned short> index_vector = {
-            0, 1, 2,
-            0, 2, 3
-    };
-    auto FontActor = new AActor("Font");
-    auto *MeshComponent = FontActor->AddComponent<AMeshComponent>("Mesh");
-    MeshComponent->CreateMesh(vertex_vector, index_vector);
-    MeshComponent->LoadMaterial(Utils::data_dir + "material/dragon.mat");
+    String s = "Philod";
     Font *Font = Font::load_from_file(Utils::data_dir + "font/hkyuan.ttf", 500);
-    Font->load_character('A');
-    MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Font->font_texture);
+    vector<Font::Character *> Characters = Font->load_string(s);
+
+    float offset = 0;
+    for (auto Character: Characters) {
+        offset += 2;
+        vector<Vertex> vertex_vector = {
+                {{-1.0f + offset, -1.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, {Character->left_top_x,     Character->right_bottom_y}},
+                {{1.0f + offset,  -1.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, {Character->right_bottom_x, Character->right_bottom_y}},
+                {{1.0f + offset,  1.0f,  1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {Character->right_bottom_x, Character->left_top_y}},
+                {{-1.0f + offset, 1.0f,  1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {Character->left_top_x,     Character->left_top_y}}
+        };
+        vector<unsigned short> index_vector = {
+                0, 1, 2,
+                0, 2, 3
+        };
+        auto FontActor = new AActor("Font");
+        auto *MeshComponent = FontActor->AddComponent<AMeshComponent>("Mesh");
+        MeshComponent->CreateMesh(vertex_vector, index_vector);
+        MeshComponent->LoadMaterial(Utils::data_dir + "material/font.mat");
+
+        Font->load_character('F');
+        MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Font->font_texture);
+    }
 }
 
 void AWorld::CreateCamera() {
     MainCameraComponent = AddComponent<ACameraComponent>("Camera");
     MainCameraComponent->Transform.Position = glm::vec3(0, 0, 10);
-    Application::MainCameraComponent = MainCameraComponent;
 }
 
 void AWorld::CreateCube() {
@@ -81,4 +90,37 @@ void AWorld::CreateCube() {
     auto MeshComponent = Cube->AddComponent<AMeshComponent>("Mesh");
     MeshComponent->LoadMesh(Utils::data_dir + "model/cube.mesh");
     MeshComponent->LoadMaterial(Utils::data_dir + "material/cube.mat");
+}
+
+void AWorld::CreatUI() {
+    auto UI = new UWidget("UI");
+    auto CameraComponent = UI->AddComponent<ACameraComponent>("Camera");
+    CameraComponent->Transform.Position = FVector(0, 0, 10);
+
+    CameraComponent->SetDepth(1);
+    CameraComponent->Mask = 0x02;
+
+    CameraComponent->ClearFlag = GL_DEPTH_BUFFER_BIT;
+    CameraComponent->SetView(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    CameraComponent->SetOrthographic(-(float) Screen::get_width() / 2, (float) Screen::get_width() / 2, -(float) Screen::get_height() / 2, (float) Screen::get_height() / 2, -100, 100);
+
+    auto Texture2D = Texture2D::Load(Utils::data_dir + "images/cube1.ret");
+    vector<Vertex> vertex_vector = {
+            {{0.f,              0.0f,              0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.f, 0.f}},
+            {{Texture2D->width, 0.0f,              0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.f, 0.f}},
+            {{Texture2D->width, Texture2D->height, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.f, 1.f}},
+            {{0.f,              Texture2D->height, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.f, 1.f}}
+    };
+    vector<unsigned short> index_vector = {
+            0, 1, 2,
+            0, 2, 3
+    };
+
+    auto UICube = new UWidget("UICube");
+
+    auto MeshComponent = UICube->AddComponent<AMeshComponent>("Mesh");
+    MeshComponent->CreateMesh(vertex_vector, index_vector);
+    MeshComponent->LoadMaterial(Utils::data_dir + "material/ui_image.mat");
+
+    MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Texture2D);
 }

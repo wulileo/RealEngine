@@ -5,6 +5,8 @@
 
 class AActor;
 
+class UWidget;
+
 class UObject {
 public:
     UObject() = delete;
@@ -15,5 +17,8 @@ public:
 
 public:
     static TArray<AActor *> Actors;
+    static TArray<UWidget *> Widgets;
+
     String Name;
+    int Layer{0x00};
 };

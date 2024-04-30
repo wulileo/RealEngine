@@ -11,8 +11,10 @@ public:
 
     }
 
-    virtual void Tick();
+    virtual void Tick() {};
+
+    virtual void OnAddToOwner() {};
 
 public:
-    AActor *Owner = NULL;
+    UObject *Owner = NULL;
 };

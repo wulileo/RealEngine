@@ -10,7 +10,11 @@ using std::ios;
 
 unordered_map<string, Font *> Font::font_map;
 
-void Font::load_character(char c) const {
+void Font::load_character(char c) {
+    if (character_map[c]) {
+        return;
+    }
+
     FT_Load_Glyph(ft_face, FT_Get_Char_Index(ft_face, c), FT_LOAD_DEFAULT);
 
     FT_Glyph ft_glyph;
@@ -19,7 +23,20 @@ void Font::load_character(char c) const {
 
     auto ft_bitmap_glyph = (FT_BitmapGlyph) ft_glyph;
     FT_Bitmap &ft_bitmap = ft_bitmap_glyph->bitmap;
-    font_texture->UpdateSubImage(0, 0, (int) ft_bitmap.width, (int) ft_bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, ft_bitmap.buffer);
+
+    if (font_texture_fill_x + ft_bitmap.width >= font_texture_size) {
+        font_texture_fill_x = 0;
+        font_texture_fill_y += font_size;
+    }
+    if (font_texture_fill_y + font_size >= font_texture_size) {
+        return;
+    }
+
+    font_texture->UpdateSubImage(font_texture_fill_x, font_texture_fill_y, (int) ft_bitmap.width, (int) ft_bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, ft_bitmap.buffer);
+
+    auto character = new Character((float) font_texture_fill_x / (float) font_texture_size, (float) font_texture_fill_y / (float) font_texture_size, (float) (font_texture_fill_x + ft_bitmap.width) / (float) font_texture_size, (float) (font_texture_fill_y + ft_bitmap.rows) / (float) font_texture_size);
+    character_map[c] = character;
+    font_texture_fill_x += ft_bitmap.width;
 }
 
 Font *Font::load_from_file(const string &path, unsigned short size) {
@@ -70,4 +87,18 @@ Font *Font::load_from_file(const string &path, unsigned short size) {
 
 Font *Font::get_font(const string &path) {
     return font_map[path];
+}
+
+vector<Font::Character *> Font::load_string(string s) {
+    vector<Character *> result;
+
+    for (auto c: s) {
+        load_character(c);
+        auto character = character_map[c];
+        if (character) {
+            result.push_back(character);
+        }
+    }
+
+    return result;
 }

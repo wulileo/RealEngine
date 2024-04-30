@@ -33,6 +33,10 @@ public:
         return data.size();
     }
 
+    void Sort(std::function<bool(T, T)> SortFunc) {
+        std::sort(data.begin(), data.end(), SortFunc);
+    }
+
     typename vector<T>::const_iterator begin() const {
         return data.cbegin();
     }

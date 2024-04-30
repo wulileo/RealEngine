@@ -1,16 +1,13 @@
-﻿#pragma once
+#pragma once
 
 #include "Object.h"
-#include "core/collections/Map.h"
-#include "Component.h"
-#include "core/collections/Array.h"
+#include "CameraComponent.h"
 
-class AComponent;
-
-class AActor : public UObject {
+class UWidget : public UObject {
 public:
-    explicit AActor(const String &Name) : UObject(Name) {
-        UObject::Actors.Add(this);
+    explicit UWidget(const String &Name) : UObject(Name) {
+        UObject::Widgets.Add(this);
+        this->Layer = 0x02;
     }
 
     AComponent *AddComponent(const String &Name);
@@ -43,10 +40,6 @@ public:
             }
         }
     }
-
-    virtual void BeginPlay();
-
-    virtual void Tick();
 
 private:
     TArray<AComponent *> Components;

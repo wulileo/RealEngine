@@ -30,8 +30,6 @@ public:
 
     GLFWwindow *window;
 
-    static ACameraComponent *MainCameraComponent;
-
 private:
 
 };

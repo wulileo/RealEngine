@@ -2,6 +2,7 @@
 #define REALENGINE_WORLD_H
 
 #include "core/object/Actor.h"
+#include "core/object/Widget.h"
 #include "core/object/MeshComponent.h"
 #include "core/object/CameraComponent.h"
 #include "application/Screen.h"
@@ -29,6 +30,8 @@ public:
     FVector2 MousePos;
 
     void CreateCube();
+
+    void CreatUI();
 };
 
 #endif //REALENGINE_WORLD_H

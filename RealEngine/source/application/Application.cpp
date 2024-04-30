@@ -1,11 +1,10 @@
 #include "Application.h"
 
 #include "core/object/Actor.h"
+#include "core/object/Widget.h"
 #include "core/input/Input.h"
 #include "core/object/MeshComponent.h"
 #include "core/object/CameraComponent.h"
-
-ACameraComponent *Application::MainCameraComponent = nullptr;
 
 static void error_callback(const char *description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -49,6 +48,9 @@ void Application::init_opengl() {
 
     glfwMakeContextCurrent(window);
     gladLoadGL();
+
+    update_screen();
+
     glfwSwapInterval(1);
 
     glfwSetKeyCallback(window, key_callback);
@@ -75,14 +77,29 @@ void Application::update_screen() const {
 }
 
 void Application::render() {
-    for (auto Actor: UObject::Actors) {
-        TArray<AMeshComponent *> MeshComponents;
-        Actor->GetComponents<AMeshComponent>(MeshComponents);
+    for (auto CameraComponent: ACameraComponent::CameraComponentArray) {
+        CameraComponent->Clear();
 
-        if (MeshComponents.Size() > 0 && MainCameraComponent) {
-            AMeshComponent *MeshComponent = MeshComponents.Get(0);
-            MeshComponent->Render(MainCameraComponent->View, MainCameraComponent->Projection);
+        for (auto Actor: UObject::Actors) {
+            TArray<AMeshComponent *> MeshComponents;
+            Actor->GetComponents<AMeshComponent>(MeshComponents);
+
+            if (MeshComponents.Size() > 0 && CameraComponent->Mask == Actor->Layer) {
+                AMeshComponent *MeshComponent = MeshComponents.Get(0);
+                MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
+            }
         }
+
+        for (auto Widget: UObject::Widgets) {
+            TArray<AMeshComponent *> MeshComponents;
+            Widget->GetComponents<AMeshComponent>(MeshComponents);
+
+            if (MeshComponents.Size() > 0 && CameraComponent->Mask == Widget->Layer) {
+                AMeshComponent *MeshComponent = MeshComponents.Get(0);
+                MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
+            }
+        }
+
     }
 }
 
