@@ -1,6 +1,7 @@
 ﻿#ifndef REALENGINE_MESHRENDERER_H
 #define REALENGINE_MESHRENDERER_H
 
+#include <functional>
 #include "glm.hpp"
 #include "glad.h"
 #include "Material.h"
@@ -24,7 +25,7 @@ public:
     unsigned int vertex_array_object = 0;
 
 public:
-    void render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view);
+    void render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view, std::function<void()> preFunc, std::function<void()> postFunc);
 };
 
 

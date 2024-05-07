@@ -41,6 +41,10 @@ public:
         }
     }
 
+    virtual void BeginPlay();
+
+    virtual void Tick();
+
 private:
     TArray<AComponent *> Components;
 };

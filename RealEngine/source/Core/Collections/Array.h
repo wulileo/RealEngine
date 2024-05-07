@@ -33,6 +33,10 @@ public:
         return data.size();
     }
 
+    bool IsEmpty() {
+        return Size() <= 0;
+    }
+
     void Sort(std::function<bool(T, T)> SortFunc) {
         std::sort(data.begin(), data.end(), SortFunc);
     }

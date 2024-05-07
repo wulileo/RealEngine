@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Component.h"
+
+#include <utility>
 #include "Mesh.h"
 #include "Material.h"
 #include "MeshRenderer.h"
@@ -17,9 +19,21 @@ public:
 
     void Render(FQuad View, FQuad Projection);
 
+    void SetPreRenderFunc(std::function<void()> Func) {
+        PreRenderFunc = std::move(Func);
+    }
+
+    void SetPostRenderFunc(std::function<void()> Func) {
+        PostRenderFunc = std::move(Func);
+    }
+
 private:
 
 public:
+    std::function<void()> PreRenderFunc;
+
+    std::function<void()> PostRenderFunc;
+
     FTransform Transform;
 
     MeshRenderer MeshRenderer;

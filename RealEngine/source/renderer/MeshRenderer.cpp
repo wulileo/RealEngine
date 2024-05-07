@@ -2,7 +2,7 @@
 #include "gtx/transform.hpp"
 #include "gtx/euler_angles.hpp"
 
-void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view) {
+void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::mat4 projection, glm::mat4 view, std::function<void()> preFunc, std::function<void()> postFunc) {
     glm::mat4 translation4 = glm::translate(position);
     glm::mat4 rotation4 = glm::eulerAngleYXZ(glm::radians(rotation.y),
                                              glm::radians(rotation.x),
@@ -46,6 +46,10 @@ void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scal
 
     glUseProgram(program_id);
     {
+        if (preFunc) {
+            preFunc();
+        }
+
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
@@ -66,5 +70,9 @@ void MeshRenderer::render(glm::vec3 position, glm::vec3 rotation, glm::vec3 scal
             glDrawElements(GL_TRIANGLES, mesh->vertex_index_num, GL_UNSIGNED_SHORT, 0);
         }
         glBindVertexArray(0);
+
+        if (postFunc) {
+            postFunc();
+        }
     }
 }

@@ -13,7 +13,7 @@ void AMeshComponent::LoadMaterial(const String &MaterialFile) {
 }
 
 void AMeshComponent::Render(FQuad View, FQuad Projection) {
-    MeshRenderer.render(Transform.Position, Transform.Rotation, Transform.Scale, Projection, View);
+    MeshRenderer.render(Transform.Position, Transform.Rotation, Transform.Scale, Projection, View, PreRenderFunc, PostRenderFunc);
 }
 
 void AMeshComponent::CreateMesh(const vector<Vertex> &data, const vector<unsigned short> &index_data) {

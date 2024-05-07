@@ -7,6 +7,10 @@
 #include "core/input/Input.h"
 #include "Font.h"
 #include "application/Application.h"
+#include "core/object/Image.h"
+#include "core/object/Mask.h"
+#include "core/object/Text.h"
+#include "core/object/Button.h"
 
 void AWorld::BeginPlay() {
     AActor::BeginPlay();
@@ -104,23 +108,23 @@ void AWorld::CreatUI() {
     CameraComponent->SetView(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     CameraComponent->SetOrthographic(-(float) Screen::get_width() / 2, (float) Screen::get_width() / 2, -(float) Screen::get_height() / 2, (float) Screen::get_height() / 2, -100, 100);
 
-    auto Texture2D = Texture2D::Load(Utils::data_dir + "images/cube1.ret");
-    vector<Vertex> vertex_vector = {
-            {{0.f,              0.0f,              0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.f, 0.f}},
-            {{Texture2D->width, 0.0f,              0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.f, 0.f}},
-            {{Texture2D->width, Texture2D->height, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.f, 1.f}},
-            {{0.f,              Texture2D->height, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.f, 1.f}}
+//    auto Mask = new UMask("Mask");
+//    Mask->LoadImage(Utils::data_dir + "images/mask.png");
+//
+//    auto UICube = new UImage("UICube");
+//    UICube->LoadImage(Utils::data_dir + "images/cube1.ret");
+
+    auto UIText = new UText("Text");
+    UIText->Font = Font::load_from_file(Utils::data_dir + "font/hkyuan.ttf", 24);
+    UIText->SetText("looks good");
+    UIText->Color = {1, 0, 0, 1};
+
+    auto UIButton = new UButton("Button");
+    UIButton->ImageNormal = new UImage("NormalImage");
+    UIButton->ImageNormal->Texture2D = Texture2D::Load(Utils::data_dir + "images/btn_power.png");
+    UIButton->ImagePress = new UImage("PressImage");
+    UIButton->ImagePress->Texture2D = Texture2D::Load(Utils::data_dir + "images/btn_power_press.png");
+    UIButton->ClickCallback = []() {
+        std::cout << "hello" << std::endl;
     };
-    vector<unsigned short> index_vector = {
-            0, 1, 2,
-            0, 2, 3
-    };
-
-    auto UICube = new UWidget("UICube");
-
-    auto MeshComponent = UICube->AddComponent<AMeshComponent>("Mesh");
-    MeshComponent->CreateMesh(vertex_vector, index_vector);
-    MeshComponent->LoadMaterial(Utils::data_dir + "material/ui_image.mat");
-
-    MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Texture2D);
 }

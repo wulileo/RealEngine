@@ -66,6 +66,10 @@ void Application::tick() const {
         Actor->Tick();
     }
 
+    for (auto Widget: UObject::Widgets) {
+        Widget->Tick();
+    }
+
     Input::Update();
 }
 
