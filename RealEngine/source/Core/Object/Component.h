@@ -1,9 +1,6 @@
 ﻿#pragma once
 
 #include "Object.h"
-#include "Actor.h"
-
-class AActor;
 
 class AComponent : public UObject {
 public:
@@ -11,10 +8,10 @@ public:
 
     }
 
-    virtual void Tick() {};
+    void Tick() override {};
 
     virtual void OnAddToOwner() {};
 
 public:
-    UObject *Owner = NULL;
+    UObject *Owner{};
 };

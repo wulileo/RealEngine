@@ -1,11 +1,11 @@
 #pragma once
 
 #include "glad/glad.h"
-#include "Component.h"
+#include "MovableComponent.h"
 
-class ACameraComponent : public AComponent {
+class ACameraComponent : public AMovableComponent {
 public:
-    explicit ACameraComponent(const String &Name) : AComponent(Name) {
+    explicit ACameraComponent(const String &Name) : AMovableComponent(Name) {
 
     }
 
@@ -23,8 +23,6 @@ public:
 
 public:
     static TArray<ACameraComponent *> CameraComponentArray;
-
-    FTransform Transform;
 
     FQuad View;
     FQuad Projection;

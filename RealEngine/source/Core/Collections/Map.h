@@ -31,6 +31,9 @@ public:
         return data.size();
     }
 
+    bool IsEmpty() {
+        return Size() <= 0;
+    }
 
     typename unordered_map<K, V>::const_iterator begin() const {
         return data.cbegin();

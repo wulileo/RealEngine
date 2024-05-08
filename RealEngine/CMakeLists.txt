@@ -8,7 +8,9 @@ if (MINGW)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-pragmas")
 endif ()
 
-#file(COPY ${PROJECT_SOURCE_DIR} DESTINATION ${PROJECT_BINARY_DIR})
+file(GLOB LIB_FILES ${PROJECT_SOURCE_DIR}/libs/*)
+file(COPY ${LIB_FILES} DESTINATION ${PROJECT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/data DESTINATION ${PROJECT_BINARY_DIR})
 
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -mwindows")
 
@@ -29,13 +31,11 @@ include_directories(${PROJECT_SOURCE_DIR}/source/utils)
 link_directories(${PROJECT_SOURCE_DIR}/libs)
 
 set(glad_c ${PROJECT_SOURCE_DIR}/depends/glad/glad.c)
-
-file(GLOB_RECURSE engine_cpp source/*.cpp)
-file(GLOB_RECURSE engine_h source/*.h)
-file(GLOB_RECURSE project_cpp project/*.cpp)
-
 file(GLOB_RECURSE rttr_cpp depends/rttr/*.cpp)
 
-add_executable(RealEngine ${engine_h} ${engine_cpp} ${glad_c} ${rttr_cpp} ${project_cpp})
+file(GLOB_RECURSE engine_cpp source/*.cpp)
+file(GLOB_RECURSE project_cpp project/*.cpp)
+
+add_executable(RealEngine ${engine_cpp} ${glad_c} ${rttr_cpp} ${project_cpp})
 
 target_link_libraries(RealEngine ${PROJECT_SOURCE_DIR}/libs/glfw3.dll ${PROJECT_SOURCE_DIR}/libs/libfreetyped.a)

@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Component.h"
-
 #include <utility>
+
 #include "Mesh.h"
 #include "Material.h"
 #include "MeshRenderer.h"
+#include "Component.h"
+#include "MovableComponent.h"
 
-class AMeshComponent : public AComponent {
+class AMeshComponent : public AMovableComponent {
 public:
-    explicit AMeshComponent(const String &Name) : AComponent(Name) {
+    explicit AMeshComponent(const String &Name) : AMovableComponent(Name) {
 
     }
 
@@ -33,8 +34,6 @@ public:
     std::function<void()> PreRenderFunc;
 
     std::function<void()> PostRenderFunc;
-
-    FTransform Transform;
 
     MeshRenderer MeshRenderer;
 

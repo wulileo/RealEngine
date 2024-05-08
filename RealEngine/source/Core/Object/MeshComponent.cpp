@@ -25,7 +25,7 @@ void AMeshComponent::CreateMesh(const vector<Vertex> &data, const vector<unsigne
     MeshRenderer.mesh->vertex_data = static_cast<Vertex *>(malloc(vertex_data_size));
     memcpy(MeshRenderer.mesh->vertex_data, &data[0], vertex_data_size);
 
-    unsigned short vertex_index_data_size = MeshRenderer.mesh->vertex_num * sizeof(Vertex);
+    unsigned short vertex_index_data_size = MeshRenderer.mesh->vertex_index_num * sizeof(unsigned short);
     MeshRenderer.mesh->vertex_index_data = static_cast<unsigned short *>(malloc(vertex_index_data_size));
     memcpy(MeshRenderer.mesh->vertex_index_data, &index_data[0], vertex_index_data_size);
 }

@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#include "core/object/Actor.h"
-#include "core/object/Widget.h"
 #include "core/input/Input.h"
 #include "core/object/MeshComponent.h"
 #include "core/object/CameraComponent.h"
@@ -62,12 +60,8 @@ void Application::init_opengl() {
 void Application::tick() const {
     update_screen();
 
-    for (auto Actor: UObject::Actors) {
-        Actor->Tick();
-    }
-
-    for (auto Widget: UObject::Widgets) {
-        Widget->Tick();
+    for (auto Object: UObject::Objects) {
+        Object->Tick();
     }
 
     Input::Update();
@@ -84,26 +78,16 @@ void Application::render() {
     for (auto CameraComponent: ACameraComponent::CameraComponentArray) {
         CameraComponent->Clear();
 
-        for (auto Actor: UObject::Actors) {
+        for (auto Object: UObject::Objects) {
             TArray<AMeshComponent *> MeshComponents;
-            Actor->GetComponents<AMeshComponent>(MeshComponents);
+            Object->GetComponents<AMeshComponent>(MeshComponents);
 
-            if (MeshComponents.Size() > 0 && CameraComponent->Mask == Actor->Layer) {
-                AMeshComponent *MeshComponent = MeshComponents.Get(0);
-                MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
+            if (MeshComponents.Size() > 0 && CameraComponent->Mask == Object->Layer) {
+                for (auto MeshComponent: MeshComponents) {
+                    MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
+                }
             }
         }
-
-        for (auto Widget: UObject::Widgets) {
-            TArray<AMeshComponent *> MeshComponents;
-            Widget->GetComponents<AMeshComponent>(MeshComponents);
-
-            if (MeshComponents.Size() > 0 && CameraComponent->Mask == Widget->Layer) {
-                AMeshComponent *MeshComponent = MeshComponents.Get(0);
-                MeshComponent->Render(CameraComponent->View, CameraComponent->Projection);
-            }
-        }
-
     }
 }
 
