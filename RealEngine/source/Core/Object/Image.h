@@ -9,6 +9,8 @@ public:
 
     }
 
+    void Init();
+
     void Tick() override;
 
 public:

@@ -11,8 +11,7 @@ void UButton::Tick() {
         return;
     }
 
-    TArray<AMeshComponent *> MeshComponents;
-    ImageNormal->GetComponents<AMeshComponent>(MeshComponents);
+    TArray<AMeshComponent *> MeshComponents = ImageNormal->GetComponents<AMeshComponent>();
     if (MeshComponents.IsEmpty()) {
         return;
     }
@@ -38,4 +37,9 @@ void UButton::Tick() {
     } else {
         bPressed = false;
     }
+}
+
+void UButton::Init() {
+    ImageNormal->Init();
+    ImagePress->Init();
 }

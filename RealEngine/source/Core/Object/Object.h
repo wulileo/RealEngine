@@ -39,20 +39,24 @@ public:
         return nullptr;
     }
 
-    void GetComponents(TArray<AComponent *> &Out) {
+    TArray<AComponent *> GetComponents() {
+        TArray<AComponent *> Result;
         for (auto Component: Components) {
-            Out.Add(Component);
+            Result.Add(Component);
         }
+        return Result;
     }
 
     template<typename T>
-    void GetComponents(TArray<T *> &Out) {
+    TArray<T *> GetComponents() {
+        TArray<T *> Result;
         for (auto Component: Components) {
             T *t = Cast<T *>(Component);
             if (t) {
-                Out.Add(t);
+                Result.Add(t);
             }
         }
+        return Result;
     }
 
     void OnAddComponent(AComponent *Component);

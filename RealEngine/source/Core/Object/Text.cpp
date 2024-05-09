@@ -14,14 +14,7 @@ void UText::Tick() {
     if (!Font || !Font->font_texture) {
         return;
     }
-    TArray<AMeshComponent *> MeshComponents;
-    GetComponents<AMeshComponent>(MeshComponents);
-    if (MeshComponents.IsEmpty()) {
-        auto *MeshComponent = AddComponent<AMeshComponent>("Mesh");
-        MeshComponent->LoadMaterial(Utils::data_dir + "material/ui_text.mat");
-        MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Font->font_texture);
-        MeshComponents.Add(MeshComponent);
-    }
+
     if (dirty) {
         dirty = false;
         std::vector<Font::Character *> Characters = Font->load_string(Text);
@@ -44,6 +37,19 @@ void UText::Tick() {
                 Indexes[i * index.size() + j] = index[j] + i * 4;
             }
         }
-        MeshComponents.Get(0)->CreateMesh(Vertexes, Indexes);
+        auto MeshComponent = Cast<AMeshComponent *>(RootComponent);
+        if (MeshComponent) {
+            MeshComponent->CreateMesh(Vertexes, Indexes);
+        }
+    }
+}
+
+void UText::Init() {
+    TArray<AMeshComponent *> MeshComponents = GetComponents<AMeshComponent>();
+    if (MeshComponents.IsEmpty()) {
+        auto *MeshComponent = AddComponent<AMeshComponent>("Mesh");
+        MeshComponent->LoadMaterial(Utils::data_dir + "material/ui_text.mat");
+        MeshComponent->MeshRenderer.material->set_texture("u_diffuse_texture", Font->font_texture);
+        MeshComponents.Add(MeshComponent);
     }
 }

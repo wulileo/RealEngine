@@ -10,9 +10,10 @@ void UImage::Tick() {
     if (!Texture2D) {
         return;
     }
+}
 
-    TArray<AMeshComponent *> MeshComponents;
-    GetComponents<AMeshComponent>(MeshComponents);
+void UImage::Init() {
+    TArray<AMeshComponent *> MeshComponents = GetComponents<AMeshComponent>();
     if (MeshComponents.IsEmpty()) {
         vector<Vertex> vertex_vector = {
                 {{0.f,              0.0f,              0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.f, 0.f}},

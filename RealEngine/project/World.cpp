@@ -109,15 +109,17 @@ void AWorld::CreatUI() {
     CameraComponent->SetOrthographic(-(float) Screen::get_width() / 2, (float) Screen::get_width() / 2, -(float) Screen::get_height() / 2, (float) Screen::get_height() / 2, -100, 100);
 
 //    auto Mask = new UMask("Mask");
-//    Mask->LoadImage(Utils::data_dir + "images/mask.png");
+//    Mask->Texture2D = Texture2D::Load(Utils::data_dir + "images/mask.png");
 //
 //    auto UICube = new UImage("UICube");
-//    UICube->LoadImage(Utils::data_dir + "images/cube1.ret");
+//    UICube->Texture2D = Texture2D::Load(Utils::data_dir + "images/cube1.ret");
 
     auto UIText = new UText("Text");
     UIText->Font = Font::load_from_file(Utils::data_dir + "font/hkyuan.ttf", 24);
     UIText->SetText("looks good");
     UIText->Color = {1, 0, 0, 1};
+    UIText->Init();
+    UIText->SetLocation({-100.0f, .0f, .0f});
 
     auto UIButton = new UButton("Button");
     UIButton->ImageNormal = new UImage("NormalImage");
@@ -127,4 +129,5 @@ void AWorld::CreatUI() {
     UIButton->ClickCallback = []() {
         std::cout << "hello" << std::endl;
     };
+    UIButton->Init();
 }

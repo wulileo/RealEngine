@@ -79,8 +79,7 @@ void Application::render() {
         CameraComponent->Clear();
 
         for (auto Object: UObject::Objects) {
-            TArray<AMeshComponent *> MeshComponents;
-            Object->GetComponents<AMeshComponent>(MeshComponents);
+            TArray<AMeshComponent *> MeshComponents = Object->GetComponents<AMeshComponent>();
 
             if (MeshComponents.Size() > 0 && CameraComponent->Mask == Object->Layer) {
                 for (auto MeshComponent: MeshComponents) {

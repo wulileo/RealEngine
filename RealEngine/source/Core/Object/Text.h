@@ -9,6 +9,8 @@ public:
 
     }
 
+    void Init();
+
     void SetText(String InText);
 
     void Tick() override;
